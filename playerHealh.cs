@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,16 +10,25 @@ public class playerHealh : MonoBehaviour
     public Sprite emptyHealth;
     private Rigidbody2D rb;
 
+    private GameObject gameOverScreen;
+    private GameObject victoryScreen;
+    public bool isCompleted;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        gameOverScreen = GameObject.FindGameObjectWithTag("GameOver");
+        gameOverScreen.SetActive(false);
+        victoryScreen = GameObject.FindGameObjectWithTag("Finish");
+        victoryScreen.SetActive(false);
+        isCompleted = false;
     }
     void Update()
     {
         if (healthPoints <= 0)
         {
+            gameOverScreen.SetActive(true);
             Destroy(gameObject);
         }
     }
@@ -35,6 +44,21 @@ public class playerHealh : MonoBehaviour
         {
             StartCoroutine(knockBack(0.2f, 350f));
             Damage();
+        }      
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("water"))
+        {
+            StartCoroutine(knockBack(0.2f, 350f));
+            Damage();
+        }
+        if (collision.CompareTag("Flag"))
+        {
+            //levelcomplete
+            isCompleted = true;
+            victoryScreen.SetActive(true);
         }
     }
 
